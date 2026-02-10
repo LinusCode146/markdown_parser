@@ -5,6 +5,7 @@ use std::fs;
 mod tests;
 
 #[derive(Debug)]
+#[derive(PartialEq)]
 pub struct Config {
     pub filepath_html: String,
     pub filepath_md: String,
@@ -36,6 +37,7 @@ impl Config {
     }
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Markdown<'a> {
     pub config: &'a Config,
     pub lines: Vec<String>,
@@ -55,4 +57,35 @@ impl<'a> Markdown<'a> {
         println!("Successfully created index.html file");
         Ok(())
     }
+
+    pub fn convert_md_to_html(&self) {
+        println!("Converted markdown file");
+    }
+}
+
+pub fn read_md_file<'b>(config: &'b Config) -> Result<Markdown<'b>, Box<dyn Error>> {
+    let contents = fs::read_to_string(&config.filepath_md)?;
+    let mk = Markdown {
+        lines: contents
+            .lines()
+            .map(|line| line.to_string())
+            .collect(),
+        html: generate_html("Hello", "<h1>Hi</h1>"),
+        config
+    };
+    Ok(mk)
+}
+
+pub fn generate_html(title: &str, content: &str) -> String {
+    format!(r#"<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{}</title>
+</head>
+<body>
+    {}
+</body>
+</html>"#, title, content)
 }

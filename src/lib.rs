@@ -1,14 +1,34 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+#[cfg(test)]
+mod tests;
+
+#[derive(Debug)]
+pub struct Config {
+    pub filepath_html: String,
+    pub filepath_md: String,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+impl Config {
+    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
+        args.next();
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+        let filepath_html = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get an html filepath here"),
+        };
+
+        if !filepath_html.ends_with(".html") || filepath_html == ".html" {
+            return Err("Invalid HTML filepath");
+        }
+
+        let filepath_md = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get an markdown filepath here"),
+        };
+
+        if !filepath_md.ends_with(".md") || filepath_md == ".md" {
+            return Err("Invalid Markdown filepath");
+        }
+
+        Ok(Config { filepath_html, filepath_md })
     }
 }

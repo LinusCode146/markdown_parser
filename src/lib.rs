@@ -1,3 +1,6 @@
+use std::error::Error;
+use std::fs;
+
 #[cfg(test)]
 mod tests;
 
@@ -30,5 +33,26 @@ impl Config {
         }
 
         Ok(Config { filepath_html, filepath_md })
+    }
+}
+
+pub struct Markdown<'a> {
+    pub config: &'a Config,
+    pub lines: Vec<String>,
+    pub html: String,
+}
+
+impl<'a> Markdown<'a> {
+    pub fn info(&self) {
+        println!("\n");
+        self.lines.iter().for_each(|line| println!("{}", line));
+    }
+
+    pub fn write_html_to_file(&self) -> Result<(), Box<dyn Error>> {
+        fs::write(&self.config.filepath_html, &self.html)?;
+
+        println!("\n");
+        println!("Successfully created index.html file");
+        Ok(())
     }
 }

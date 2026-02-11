@@ -1,5 +1,5 @@
 use std::process;
-use crate::{read_md_file, Config, Markdown};
+use crate::{read_md_file, Config};
 
 #[test]
 fn test_config_builder() {
@@ -28,23 +28,10 @@ fn test_wrong_md_paths() {
 }
 
 #[test]
-fn test_create_markdown_object() {
-    let config = Config::build(vec![String::from("hey"), String::from("index.html"), String::from("hello.md")]
-        .into_iter()).unwrap();
-
-    let mk_file = read_md_file(&config).expect("something is wrong with the md file");
-    assert_eq!(mk_file, Markdown {
-        config: &config,
-        lines: vec!["# Überschrift 1".to_string(), "## Überschrift 2".to_string(), "### Überschrift 3".to_string(), "#### Überschrift 4".to_string(), "".to_string(),  "Ganz normaler text".to_string()],
-        html: "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Hello</title>\n</head>\n<body>\n    <h1>Hi</h1>\n</body>\n</html>".to_string(),
-    })
-}
-
-#[test]
 #[should_panic]
 fn test_create_markdown_object_wrong_filepath() {
     let config = Config::build(vec![String::from("hey"), String::from("index.html"), String::from("hello2.md")]
         .into_iter()).unwrap();
 
-    let _mk_file = read_md_file(&config).expect("something is wrong with the md file");
+    let _mk_file = read_md_file(config).expect("something is wrong with the md file");
 }

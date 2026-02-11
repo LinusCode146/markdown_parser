@@ -8,7 +8,7 @@ fn main() {
         process::exit(1);
     });
 
-    let mk_file = read_md_file(&config).expect("something is wrong with the md file");
+    let mut mk_file = read_md_file(config).expect("something is wrong with the md file");
     mk_file.info();
     mk_file.convert_md_to_html();
     mk_file.write_html_to_file().expect("something went wrong creating the html file");
